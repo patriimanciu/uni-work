@@ -55,4 +55,3 @@ e.g.\
 
 **(E) Undo**\
 `undo` – the last operation that modified program data is reversed. The user can undo all operations performed since program start by repeatedly calling this function.
----
