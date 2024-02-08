@@ -1,4 +1,4 @@
-# :computer: Assignment 01
+# 💻 Assignment 01
 
 ## Requirements
 - Solve one problem statement from each set
