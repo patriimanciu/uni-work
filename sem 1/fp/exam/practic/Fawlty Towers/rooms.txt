@@ -1,0 +1,3 @@
+single rooms = 2
+double rooms = 3
+family rooms = 0
