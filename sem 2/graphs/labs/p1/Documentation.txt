@@ -1,0 +1,181 @@
+Class: Graph
+
+Description:
+    Represents a directed graph.
+
+Attributes:
+    - __num_vertices (int): The number of vertices in the graph.
+    - __num_edges (int): The number of edges in the graph.
+    - __edges (dict): Dictionary storing the cost of each edge.
+    - __in_edges (dict): Dictionary storing inbound edges for each vertex.
+    - __out_edges (dict): Dictionary storing outbound edges for each vertex.
+
+Methods:
+    - __init__(num_vertices=0)
+        Constructor for the Graph class.
+        Initializes a graph with the specified number of vertices.
+        Algorithm Complexity: O(V), where V is the number of vertices.
+
+    - get_edges()
+        Returns the edges of the graph.
+        Algorithm Complexity: O(1)
+
+    - get_num_vertices()
+        Returns the number of vertices of the graph.
+        Algorithm Complexity: O(1)
+
+    - set_num_vertices(num_vertices: int)
+        Sets the number of vertices of the graph.
+        Algorithm Complexity: O(1)
+
+    - set_num_edges(num_edges: int)
+        Sets the number of edges of the graph.
+        Algorithm Complexity: O(1)
+
+    - get_num_edges()
+        Returns the number of edges of the graph.
+        Algorithm Complexity: O(1)
+
+    - get_edge_by_key(key: tuple)
+        Returns the cost of an edge specified by its key.
+        Algorithm Complexity: O(1)
+
+    - get_vertices()
+        Returns the vertices of the graph.
+        Algorithm Complexity: O(E), where E is the number of edges.
+
+    - edge_exists(x: int, y: int)
+        Checks if an edge exists between two vertices.
+        Algorithm Complexity: O(1)
+
+    - add_edge(x: int, y: int, cost)
+        Adds an edge between two vertices with the given cost.
+        Algorithm Complexity: O(1)
+
+    - get_in_degree(x: int)
+        Returns the in-degree of a vertex.
+        Algorithm Complexity: O(1)
+
+    - get_out_degree(x: int)
+        Returns the out-degree of a vertex.
+        Algorithm Complexity: O(1)
+
+    - get_out_vertices()
+        Returns the vertices that have outbound edges.
+        Algorithm Complexity: O(V), where V is the number of vertices.
+
+    - get_in_vertices()
+        Returns the vertices that have inbound edges.
+        Algorithm Complexity: O(V), where V is the number of vertices.
+
+    - get_outbound_edges(x: int)
+        Returns the outbound edges of a vertex.
+        Algorithm Complexity: O(1)
+
+    - get_inbound_edges(x: int)
+        Returns the inbound edges of a vertex.
+        Algorithm Complexity: O(1)
+
+    - get_cost_of_edge(x: int, y: int)
+        Returns the cost of an edge.
+        Algorithm Complexity: O(1)
+
+    - modify_edge(x: int, y: int, cost: int)
+        Modifies the cost of an edge.
+        Algorithm Complexity: O(1)
+
+    - add_vertex(vertex: int)
+        Adds a vertex to the graph.
+        Algorithm Complexity: O(1)
+
+    - remove_vertex(vertex: int)
+        Removes a vertex from the graph.
+        Algorithm Complexity: O(E + V), where E is the number of edges and V is the number of vertices.
+
+    - remove_edge(x: int, y: int)
+        Removes an edge from the graph.
+        Algorithm Complexity: O(E), where E is the number of edges.
+
+    - graph_deepcopy()
+        Returns a deep copy of the graph.
+        Algorithm Complexity: O(V + E), where V is the number of vertices and E is the number of edges.
+
+------------------------------------------------------------------------------------------------------------------------
+
+Class: Service
+
+Description:
+    Provides services related to manipulating a graph.
+
+Attributes:
+    - graph (Graph): The graph object.
+
+Methods:
+    - __init__()
+        Initializes the Service object with an empty graph.
+
+    - get_graph()
+        Returns the graph.
+
+    - get_vertices()
+        Returns the vertices of the graph.
+
+    - edge_exists(x: int, y: int)
+        Checks if an edge exists between two vertices.
+        Algorithm Complexity: O(1)
+
+    - add_edge(x: int, y: int, cost: int)
+        Adds an edge between two vertices with the given cost.
+        Algorithm Complexity: O(1)
+
+    - get_in_degree(x: int)
+        Returns the in-degree of a vertex.
+        Algorithm Complexity: O(1)
+
+    - generate_random_data(vertices: int, edges: int)
+        Generates a random graph with the given number of vertices and edges.
+        Algorithm Complexity: O(V^2 + E), where V is the number of vertices and E is the number of edges.
+
+    - get_out_degree(x: int)
+        Returns the out-degree of a vertex.
+        Algorithm Complexity: O(1)
+
+    - get_outbound_edges(x: int)
+        Returns the outbound edges of a vertex.
+        Algorithm Complexity: O(1)
+
+    - get_inbound_edges(x: int)
+        Returns the inbound edges of a vertex.
+        Algorithm Complexity: O(1)
+
+    - get_cost_edge(x: int, y: int)
+        Returns the cost of an edge.
+        Algorithm Complexity: O(1)
+
+    - modify_cost(x: int, y: int, cost: int)
+        Modifies the cost of an edge.
+        Algorithm Complexity: O(1)
+
+    - add_vertex(vertex: int)
+        Adds a vertex to the graph.
+        Algorithm Complexity: O(1)
+
+    - remove_vertex(vertex: int)
+        Removes a vertex from the graph.
+        Algorithm Complexity: O(E + V), where E is the number of edges and V is the number of vertices.
+
+    - remove_edge(x: int, y: int)
+        Removes an edge from the graph.
+        Algorithm Complexity: O(E), where E is the number of edges.
+
+    - graph_deepcopy()
+        Returns a deep copy of the graph.
+        Algorithm Complexity: O(V + E), where V is the number of vertices and E is the number of edges.
+
+    - read_graph(filename: str)
+        Reads a graph from a file.
+        Algorithm Complexity: O(E), where E is the number of edges.
+
+    - write_graph(filename: str)
+        Writes the graph to a file.
+        Algorithm Complexity: O(E), where E is the number of edges.
