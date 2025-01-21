@@ -1,0 +1,14 @@
+# ninja log v5
+1	209	1712151457774703314	CMakeFiles/Stack.dir/ShortTest.cpp.o	b3bfcb791adec1d5
+1	426	1712151457994160245	CMakeFiles/Stack.dir/ExtendedTest.cpp.o	cbc79f35a293308c
+0	211	1712151457778915408	CMakeFiles/Stack.dir/Stack.cpp.o	e0589b73e03ca429
+2	267	1712151463999627048	CMakeFiles/Stack.dir/App.cpp.o	48df175de3e9296
+267	297	1712151464031374369	Stack	90f25888d5ad027c
+4	185	1712322789579490901	CMakeFiles/Stack.dir/ShortTest.cpp.o	b3bfcb791adec1d5
+4	192	1712322789587779077	CMakeFiles/Stack.dir/Stack.cpp.o	e0589b73e03ca429
+4	470	1712322789863738530	CMakeFiles/Stack.dir/ExtraTest.cpp.o	c42b6f9db36ee27c
+3	470	1712322789863471413	CMakeFiles/Stack.dir/App.cpp.o	48df175de3e9296
+4	474	1712322789870207218	CMakeFiles/Stack.dir/ExtendedTest.cpp.o	cbc79f35a293308c
+474	558	1712322789955879816	Stack	f6fbeb504dc0bf29
+2	403	1712322831215652329	CMakeFiles/Stack.dir/App.cpp.o	48df175de3e9296
+403	445	1712322831260820352	Stack	f6fbeb504dc0bf29

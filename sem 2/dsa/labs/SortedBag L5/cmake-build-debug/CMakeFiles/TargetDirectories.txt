@@ -1,0 +1,3 @@
+/Users/patriimanciu/home/uni/dsa/SortedBag L5/cmake-build-debug/CMakeFiles/SortedBag_L5.dir
+/Users/patriimanciu/home/uni/dsa/SortedBag L5/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/patriimanciu/home/uni/dsa/SortedBag L5/cmake-build-debug/CMakeFiles/rebuild_cache.dir
