@@ -1,0 +1,113 @@
+*((int *) v) -> first casting, then dereference
+
+we can have global variables
+
+int n;
+int *arr;
+
+void *f(void *arg) {
+    int index = *((int *) arg);
+    arr[index] = rand() % 1000;
+
+    // wait until all threads execute this line
+
+    int other = rand() % n;
+    while (other == index) {
+        other = rand() % n;
+    }
+
+    int val = arr[other] / 10;
+    arr[other] += val;
+    arr[index] -= val;
+    return NULL;
+}
+
+- BARIER
+    pthread_barrier_t bar;
+
+    pthread_mutex_t mtx;
+
+    void *f(void *arg) {
+     int index = *((int *) arg);
+     arr[index] = rand() % 1000;
+
+     // wait until all threads execute this line
+     pthread_barrier_wait(&bar);
+
+     int other = rand() % n;
+     while (other == index) {
+        other = rand() % n;
+     }
+
+     // protect the shared variable when accessing it
+     pthread_mutex_lock(&mtx);
+     int val = arr[other] / 10;
+     arr[other] += val;
+     arr[index] -= val;
+     pthread_mutex_unlock(&mtx);
+     return NULL;
+    }
+
+int main() {
+    srand(getpid());
+    n = atoi(argv[1]);
+    arr = malloc(n * sizeof(int));
+    pthread_barrier_init(&bar, NULL, n);
+    pthread_mutex_init(&mtx, NULL);
+    pthread_t th[n];
+    for (int i = 0; i < n; i++ ) {
+        if (0 != pthread_create(&th[i], NULL, f, &i)) {
+            perror("Cannot create thread");
+            exit(1);
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        pthread_join(th[i], NULL);
+    }
+    pthread_barrier_destroy(&bar);
+    pthread_mutex_destroy(&mtx);
+    for (int i = 0; i < n; i++) {
+        printf("arr[%d] ", arr[i]);
+    }
+    free(arr);
+    return 0;
+}
+
+
+!!! passing here i, allocated on the stack, always the same address, so we need to allocate it on the heap
+    int index[n];
+    for (int i = 0; i < n; i++ ) {
+         index[i] = i;
+         if (0 != pthread_create(&th[i], NULL, f, &index[i])) {
+             perror("Cannot create thread");
+             exit(1);
+         }
+     }
+
+! every time a barrier hits 0, it is reset to the initial value
+
+- CONDITIONAL VARIABLES
+pthread_cond_t cond;
+ pthread_cond_wait (&cond, &mtx);
+    -> unlocks the mutex and waits for a signal
+    -> must be called with the mutex locked
+
+    LOCK (mtx)                 ------ Unlocks the mutex
+    WHILE (condition) {        |  ---- thread waits for a signal
+        WAIT (cond, mtx); -------|
+                               |  ---- thread is woken up
+                               | ------ unlocks the mutex
+    }
+
+    -> if you call a signal with a locked mutex, you must unlock it before calling the signal
+
+
+SEMAPHORE
+sem_t sem1, sem2;
+sem_init(&sem1, 0, n/2); -> the flag in the middle is 0 for local, 1 for global
+                       -> the last argument is the initial value of the semaphore
+sem_init(&sem2, 0, 1); -> is just a mutex
+
+sem_post(&sem1); -> increment the semaphore
+sem_wait(&sem1); -> decrement the semaphore

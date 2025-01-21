@@ -1,0 +1,18 @@
+prb 1: you have a bunch of kids trying to go into a bathroom stall
+trylock() -> either locks or returns a value
+    -> problem with kids and bathroom stalls
+    for (int i = 0; i < 3; i++) {
+        lock(&m[i]);
+        1 go
+        unlock(&m[i]);
+    }
+    -> this will make everyone wait for the first stall, not distribute them
+
+prb 2: elevator -> more kilos than allowed, the elevator keeps locking
+
+prb 3: trampoline -> only a specific number of kids can jump at a time
+
+prb 4: forest -> bees and bears
+    -> bees make honey, bears eat honey
+    -> ranger kicks in when there's no honey
+

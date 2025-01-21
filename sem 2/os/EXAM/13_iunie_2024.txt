@@ -1,0 +1,186 @@
+1. RO: Daţi trei expresii regulare care acceptă orice număr ne-negativ multiplu de 5.
+EN: Give three regular expressions that match any non-negative number multiple of 5.
+
+Answer:
+grep -E "[^-][0-9]*[05]" file.txt
+"[^-][0-9]{0,}[05]"
+" [0-9]*[05]"
+-10
+
+2. RO: Daţi cinci comenzi GREP care afişează toate liniile dintr-un fişier care conţin litera "a" mare sau mic.
+EN: Give five GREP commands that display all the lines in a file that contain letter "a" uppercase or lowercase.
+
+Answer:
+grep -E -i "a" file.txt
+grep -E "[aA]" file.txt
+grep -E -i ".*a.*" file.txt
+grep -E ".*[aA].*" file.txt
+grep -E -i "A" file.txt
+
+3. RO: Scrieţi două comenzi SED care afişează dintr-un fişier doar liniile care nu conţin cifra 7.
+EN: Write two SED commands that display from a file only the lines that do not contain digit 7.
+
+Answer:
+sed -E "s/([^7])/\1/g"
+sed -E "s/(.*)([^7])(.*)/\1\2\3/g""
+
+4. RO: Scrieţi o comandă AWK care afişează suma penultimului câmp al tuturor liniilor.
+EN: Write an AWK command that displays the sum of the next to last field of all lines.
+
+Answer:
+awk -F 'BEGIN {S=0} {S+=$(NF-1)} END {print S}'
+// NF is the number of fields for each line
+
+5. RO: Cum puteţi redirecta în linia de comanda ieşirea de eroare prin pipe înspre un alt program?
+EN: How can you redirect on the command line the standard error through pipe to another program?
+
+Answer:
+using &>2
+-0
+
+6. RO: Scrieţi un script Shell UNIX care afişează toate argumentele din linia de comandă fără a folosi FOR.
+EN: Write a UNIX Shell script that displays all command line arguments without using FOR
+
+Answer:
+C=0 // number of args
+WHILE C <= $# {
+    echo $C
+    C=`expr C + 1`
+}
+
+7. RO: Desenati ierarhia proceselor create de codul de mai jos, incluzand procesul parinte.
+EN: Draw the hierarchy of processes created by the code below, including the parent process.
+
+    for(i=0; i<3; i++) {
+        fork();
+        execlp("ls", "ls", "/", NULL);
+    }
+
+Answer:
+
+P -> C1
+The parent froks and creates C1, which executes the execlp (that succeeds) and stops. The parent then also executes it and stops the for, creating just one child.
+
+8. RO: Adăugaţi liniile de cod C necesare pentru ca instrucţiunea de mai jos să suprascrie conţinutul unui fişier b.txt. Nu modificaţi instrucţiunea.
+EN: Add the necessary lines of C code so that the instruction below overwrites the content of a file b.txt. Do not change the instruction.
+
+    stdin -> 0
+    stdout -> 1
+    stderr -> 2
+    a.txt -> 3
+    b.txt -> 4
+
+    #include <unistd.h>
+
+    dup2(1, b.txt);
+    execlp("cat", "cat", "a.txt", NULL);
+
+Answer:
+
+9. RO: De ce nu e recomandat sa comunicaţi bidirecţional printr-un singur FIFO?
+EN: Why is it not advisable to communicate bidirectionally through a single FIFO?
+
+Answer:
+FIFO uses files, that wait to be opened both ways in separate processes. Read and Write, used for FIFOs extract the data from it. Using just one FIFO for both it's not possible. The data that was just sent might be "pushed back"
+-> | 2 3 . . | ->
+<- 2 | 3 . . . | <-
+we would get 2 instead of the data we wanted.
+
+The same FIFO should be opened with both read and write.
+-10
+
+10. RO: Câte FIFO-uri poate deschide un process dacă nu sunt şi nici nu vor fi folosite vreodată de vreun alt proces?
+EN: How many FIFOs can a process open if they are not and will not ever be used by any other process?
+
+Answer:
+0 because the FIFO won't pass the open instruction until it is opened from the other side as well (r / w and vice versa)
+-10
+
+11. RO: Când aţi folosi un process în locul unui thread?
+EN: When would you prefer using a process instead of a thread?
+
+Answer:
+Creating a new process with fork clones the whole thing, while a thread just creates another stack. I'd use processes when I have to work with functions such as execl, execv, since they stop the exectution when successful. Using multiple processes ensures tha my parent process completes and is not stopped by them.
+-6
+
+12. RO: Ce este o "secţiune critică"?
+EN: What is a "critical section"?
+
+Answer:
+A critical section is a portion of the code, be it a variable, that is shared between mutiple threads. (eg. global variables). These resources need to be protected using some sort of syncronization mechanism because if not, we would have race conditions. This means that the threads "race" through the critical section and the output might change.
+eg. a simple n++ has to be taken into a register, incremented and then put back. well 2 threads might get the same initial value and try tp increment it at the same time. therefore, instead of 2 increments we'd have juts one.
+-10
+
+13. RO: De ce un thread trebuie să reverifice condiţia la ieşirea din apelul pthread_cond_wait?
+EN: Why should the thread recheck the condition after returning from the pthread_cond_wait call?
+
+Answer:
+When the thread was awakened the condition was fullfilled, but in the time between when the signal was sent and pthread_cond_wait got it, the variables migth have changed so that the condition is not fullfiled anymore, so there's no need for the action we have after the wait. This is why the thread goes back to sleep.
+eg. the Bees, Bear and Ranger problem. By the time the ranger got the mutex, the bees made enough honey, so there's no need for the ranger.
+-10
+
+14. RO: Care va fi efectul înlocuirii apelurilor la pthread_mutex_lock cu apeluri la pthread_rwlock_rdlock?
+EN: What will be the effect of replacing calls to pthread_mutex_lock with calls to pthread_rwlock_rdlock?
+
+Answer:
+A read lock allows multiple readers to just look at the critical section, without modifying it. The pthread_rwlock_rdlock and pthread_mutex_lock are not quite the same thing, so a  pthread_mutex_lock cannot be replaced by just a pthread_rwlock_rdlock if we know the section will modify data. It could be replace though by a pthread_rwlock_wrlock, that only allow one writer at a time.
+-4
+
+15. RO: Care e efectul apelului la pthread_barrier_wait pentru o barieră iniţializată cu 1?
+EN: What is the effect of calling pthread_barrier_wait on a barrier initialized with 1?
+
+Answer:
+Once a thread get's to it, it lets it pass. The barrier somehow gathers the threads right before it, once the number is complete, it lets them all at once. Since this barrier is initilized with 1, it let's it go right away, without waiting for anybody. So really, it's kinda useless.
+-10
+
+16. RO: Cum puteţi incrementa valoarea unui semafor?
+EN: How can you increment the value of a POSIX semaphore?
+
+Answer:
+using sem_post(&sem)
+-10
+
+17. RO: Ce puteţi face ca programator pentru a preveni deadlock-urile? Justificaţi răspunsul.
+EN: What can you do as a software developer to prevent deadlocks? Justify your answer.
+
+Answer:
+Deadlocks happen because of 4 reasons: mutual exclution (which we need), lock and wait (also needed), non-precumption and circular wait. The only one we can control per se is the circular wait one. To ensure that we won't create cycles, waiting on threads that are also waiting on someone else, always lock and unlock your resources in the same order.
+-10
+
+18. RO: Prin ce tranziţie de stare va trece un process când citeşte dintr-un fişier?
+EN: What state transition will a process undergo when reading from a file?
+
+Answer:
+The process goes from RUN into WAIT (where it waits for the data to be read), then back into READY and when the CPU allows it, back into RUN.
+-10
+
+19. RO: Ce conţinue superblocul unui disc Linux?
+EN: What is the content of the superblock on a Linux disk?
+
+Answer:
+The internal struccture of a Linux Disk is as follows:
+Block 0 - BOOT BLOCK
+----------------------
+Block 1 - Superblock
+----------------------
+Block 2
+  .
+  .       I-NODES
+  .
+Block n
+----------------------
+Blcok n+1
+  .
+  .       File Zone
+  .
+-1
+
+20. RO: Enumeraţi tipurile de adresare a blocurilor de date dintr-un i-nod.
+EN: Enumerate the data block adressing types of an i-node.
+
+Answer:
+In an I-NODE, the first 10 blocks are the data blocks that have direct access into the memory, the 11th is the one that is single inderected, 12th is a double redirection and 13th is the triple redirection.
+| 0 | 1 | ... | 9 |   10   |   11   |   12   |
+   direct access    single    double   triple
+     to memory     redirect   redir.    redir.
+the very first part of the I-NODE contains the meta data, this is the file size, the permitions and ownership.

@@ -1,0 +1,53 @@
+grep - copy
+sed - search and replace
+
+*regular expressions
+*learn regular expressions table for test week 6
+*teaching notes 4.1
+
+* is a wild card, you can use it as grep " " *.txt -> meaning search in any file in the given directory that ends with .txt
+
+GREP
+-> case sensitive
+-> use -i for it to be case insensitive
+
+-match all lines that contain ana
+grep "ana" input.txt
+    ana
+    1234ana
+    stii unde e anabel
+    afbhik kna anastasia acbdi
+
+grep -i "Ana" input.txt
+    ana
+    1234ana
+    stii unde e anabel
+    afbhik kna anastasia acbdi
+
+SED
+-> just oututs the result, without replacing the original file
+-> s/ is for substitute
+-> /d if like a filter, deletes all files containing the given expression
+
+sed "s/ana/maria/" input.txt
+    maria
+    1234maria
+    stii unde e mariabel
+    afbhik kna mariastasia acbdi
+
+    nothing
+    12345
+
+sed "/ana/d" input.txt
+
+    nothing
+    12345
+
+sed 'y/aei/@3!/' input.txt
+    @n@
+    1234@n@
+    st!! und3 3 @n@b3l
+    @fbh!k kn@ @n@st@s!@ @cbd!
+
+    noth!ng
+    12345

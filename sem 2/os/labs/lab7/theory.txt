@@ -1,0 +1,104 @@
+for most of the requirements, you have to think that there must be a sheel command that can do it (sed / grep / awk)
+you can see grep as a function that provides filtering
+
+for A in $@; do  // A is iterator, $@ are all the arguments
+    // TABS
+    // check if they are files or directories
+    if test -f $A; then // -f is for file -> this is the "shell way of doing it"
+        echo "$A is a file"
+    elif [-d $A]; then // -d is for directory -> more like a switch case in other languages
+        echo "$A is a directory"
+    else
+        echo "$A is not valid"
+    fi
+done
+
+if you want to verify lower branches, you need to use the full path of the file
+
+5.6.2.2
+for A in $@; do
+     if test -f $A; then
+         echo "$A is a file"
+     elif [-d $A]; then
+         echo "$A is a directory"
+     elif echo $A | grep -q -E '  ^[0-9]+$'; then
+        echo "$A is a number"
+     fi
+ done
+
+5.5.2.1
+ count all lines from all files
+
+ for A in `find . -type f`; do
+    // when you want to associate a value do a variable don't use spaces and "capture" the result with ``
+    N=`grep -E '^[0-9]+$' $A | wc -l` // wc -l counts the lines
+    S=`expr $S+$N` // expr is a shell command that can do operations
+ done
+
+find all files in a directory that have a size greater than a given value
+the 5th field of ls -l is the size of the file
+the classical operators do not work for comparing numbers in shell!!
+    -gt, -lt, -eq, -ne, -le, -ge
+D=$1
+S=$2
+for A in `find $D -type f`; do
+    N=`ls -l $A | awk '{print $5}'`
+    if test $N -gt $S; then
+        echo $A
+    fi
+done
+
+
+WHILE
+read from keyboard until the user types "stop"
+5.7.1.3
+== verifies 2 strings
+  1 #!/bin/bash
+  2
+  3 while true; do
+  4     read X
+  5     if [ "$X"=="stop" ]; then // "" are important, since they CAST the variable to a string
+  6         break
+  7     fi
+  8 done
+
+*script thar recieves a directory and checks for any changes into it
+change can be at the file level or at the directory level, content or details
+             content      |      details
+        ------------------|----------------
+file          cat f       |      ls -l f
+--------------------------|----------------
+directory    ls -l d      |    ls -l -d d
+
+-> build hash of all files and directories
+-> hash is one way, you cannot go back
+
+#!/bin/bash
+D=$1
+if [ -z "$D" ]; then
+    echo "ERROR: No directory provided for monitoring" >&2
+    exit 1
+fi
+if [ ! -d "$D" ]; then
+    echo "ERROR: Directory $D does not exist" >&2
+    exit 1
+fi
+STATE=""
+while true; do
+    S=""
+    for P in `find $D`; do
+        if [ -f $P ]; then
+            LS=`ls -l $P | sha1sum`
+            CONTENT=`sha1sum $P`
+        elif [ -d $P ]; then
+            LS=`ls -l -d $P | sha1sum`
+            CONTENT=`ls -l $P | sha1sum`
+        fi
+        S="$S\n$LS $CONTENT"
+    done
+    if [ -n "$STATE" ] && [ "$S" != "$STATE" ]; then
+        echo "Directory state changed"
+    fi
+    STATE=$S
+    sleep 1
+done

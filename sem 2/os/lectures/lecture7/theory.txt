@@ -1,0 +1,138 @@
+read
+    -> syncronisation process, not your usual read/write
+    - extracts the data (doesn't leave it in place)
+    - waits when empty (doesn't give an error either)
+        - until some data
+        - until no writers
+    * read doesn't give you what you want, but rather what it can
+
+write
+    - adds data (might overwrite)
+    - waits when full
+        - until some space
+        - until no readers
+
+* none of them gives an error
+-> Why doesn't read read as many bytes as i ask it to?
+    maybe there aren't that many
+    how long are you gonna wait for it?
+
+
+open (FIFO)
+    - waits until FIFO opened for complementary operations
+    O_NDELAY (fcutl) -> flag that can be passed to open and it does NOT wait for anything
+
+pipes are ONE DIRECTION!!
+pipes and FIFO are communication channels
+
+IPC - inter processor communication (SHM, MSG, SEM)
+ -> mechanisms at the processor level that allow communication between them
+ when you create this, try the ip to be unique
+ -> ipcmk
+ - clean up after yourself :)
+    > ipcmk --shmem 1024 --mode 600 (make a shared memory)
+    > ipcs (see it)
+    > ipcrm -M [key] (remove it)
+
+how does it work?
+    -> create it
+    -> where you open it, you get a handler
+
+shmget has no syncronization, it doesn't wait!
+by the time b is ran, you have no more shared memory either
+
+h.h
+ #include <stdio.h>
+ #include <sys/ipc.h>
+ #include <sys/shm.h>
+ #include <stdlib.h>
+ #include <time.h>
+
+ struct absp {
+     int a;
+     int b;
+     int s;
+     int p;
+ };
+
+
+a.c
+ #include "h.h"
+
+ int main(int argc, char ** argv) {
+     int shmid;
+     struct absp* x;
+
+     shmid = shmget(1234, sizeof(struct absp), IPC_CREAT|0600); // create a shared memory at ip 1234 and give it permition 0600
+     x = shmat(shmid, 0, 0); // pointer to that memory, shmat just connects it
+     srand(time(NULL)); // current time in seconds since 1970 :)
+     while (1) {
+         x->a = rand() % 100;
+         x->b = rand() % 100;
+         if (x->p == x->s)
+             break;
+     }
+
+     shmdt(x);
+     shmctl(shmid, IPC_RMID, NULL);
+     return 0;
+ }
+
+
+b.c
+  #include "h.h"
+
+  int main(int argc, char ** argv) {
+      int shmid;
+      struct absp* x;
+
+      shmid = shmget(1234, 0, 0);
+      x = shmat(shmid, 0, 0); // pointer to that memory
+      srand(time(NULL)); // current time in seconds since 1970 :)
+      while (1) {
+          x->p = x->a * x->b;
+          x->s = x->a + x->b;
+          if (x->p == x->s)
+              break;
+      }
+
+      shmdt(x);
+      return 0;
+  }
+
+threads are mechanism that take a function and runs them WITH the current process, in parallel
+    -> unlike fork(), you don't clone the whole process
+    - when creating a thread, you create a new stack
+        ctx
+    ---------------
+        source
+    ---------------
+        const
+    ---------------
+        variables
+    ---------------
+        heap
+
+        stack
+
+THREAD
+ #include <stdio.h>
+ #include <pthread.h>
+
+ void* f(void* a) {
+     printf("f\n");
+     return NULL;
+ }
+
+ int main(int argc, char ** argv) {
+     // threads will have a handler, but there's no child-parent relation here
+     pthread_t t;
+     pthread_create(&t, NULL, f, NULL);
+     // now we have 2 threads, main and f that work in parallel
+     printf("main\n");
+     pthread_join(t, NULL);
+     return 0;
+ }
+
+one argument is enough since you can pass a struct with all the arguments you need
+

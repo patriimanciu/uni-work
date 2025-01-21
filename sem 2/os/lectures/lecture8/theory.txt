@@ -1,0 +1,13 @@
+-race condition
+n -> critical
+    variable
+    resource
+n++ -> critical region
+
+mutex (mutual exclution)
+rwlock (read-write lock)
+contional variable
+barriers
+semaphores
+
+! surround critical region with mutex lock and unlock

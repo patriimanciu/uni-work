@@ -1,0 +1,24 @@
+[abc] - takes them with an OR between them -> will return a line that contains any of these characters
+[a-z0-9] *matches ONE SINGLE character
++ -> one or more times
+* -> zero or more times
+    -> can be looked at like a while loop
+? -> zero or more timess, binary -> yes or no
+[a-z]{3} -> the sequence has to be matched at least 3 times
+^ -> beginning of the line or not (^ana or [^a-z])
+
+grep -E '/^ana/' n.txt -> searches for ana at the beginning of the line
+grep -E '/^.{3}$/' n.txt -> any line that has exactly 3 characters
+    -> '/^...$' does exactly the same
+
+cat /etc/passwd | wc -l -> takes the output and counts the lines
+
+grep -E "^[a-z]{2}[02468]+:" /etc/passwd
+grep -E "^..[02468]+:" /ect/passwd
+    -> find usernames that contain only even numbers
+
+grep -E "^([^:]*[aeiou][^:]*){2}:" /etc/passwd
+    -> username has at least 2 vowels
+
+grep -E "^([^:]+:){4}[^:]*\<ION\>" /etc/passwd
+    -> find the students with the name ION

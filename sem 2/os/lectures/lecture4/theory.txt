@@ -1,0 +1,142 @@
+* is anyone gonna mess with my data while i use it -> the new 2AM formula
+
+ex:
+    load AX, n
+    inc AX
+    store AX, n
+
+    A | B
+    L
+        L
+    I
+        I
+    S
+        S
+
+    this way the data is compromised, since it happened at the same time. your value was not incremented
+
+& at the end of a line runs it in the background
+
+how do you have multiple programs running on the same processor at the same time?
+    -> a program is a file in execution
+    -> every few seconds, the processor interrups the execution and chooses another program, puts in onto the cpu
+
+bash knows how to create a process, all commands are essentially that :)
+
+------------------
+       ctx             --> context
+------------------
+    source code                     fork() starts another process
+------------------                          -> it makes a copy of the executable
+    constants
+------------------
+    variables
+------------------
+      heap
+
+
+      stack
+------------------
+
+-> output of 1.c
+ #include <stdio.h>
+ #include <unistd.h>
+
+ int main(int argc, char** argv) {
+     printf("before %d %d\n", getpid(), getppid());
+     fork();
+     printf("after %d %d\n", getpid(), getppid));
+     return 0;
+ }
+    before 12173
+    after 12173
+    after 12174
+
+    before 12199 11884
+    after 12199 11884
+    after 12200 12199
+
+getpid() -> get the id of the child program
+getppid() -> get the id of the parent program
+         P
+      /  |  \
+     C0  C1  C2
+  /  |  \
+C01 C02 C03
+
+
+
+-> for a for loop i=0,3
+    before 12251 11884
+    after 12251 11884
+    before 12251 11884
+    after 12251 11884
+    before 12251 11884
+    after 12252 12251
+    before 12252 12251
+    after 12253 12251
+    before 12253 12251
+    after 12251 11884
+    after 12252 12251
+    before 12252 12251
+    after 12254 1
+    after 12255 12252
+    before 12255 12252
+    after 12253 1
+    after 12252 1
+    after 12256 1
+    after 12257 12252
+    after 12255 1
+    after 12258 1
+
+* fork() returns
+    -> 0 in the child
+    -> child PID in the parent
+
+-> output for 2.c
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <stdlib.h>
+
+ int main(int argc, char** argv) {
+     int pid;
+     pid = fork();
+     printf("before\n");
+     if (pid == 0) {
+         printf("Child specific code pid =%d for fork return=%d.\n", getpid(), pid);
+         exit(0);
+     }
+     printf("parent specific code child PID=%d.\n", pid);
+     wait(0);
+     return 0;
+ }
+
+    before
+    parent specific code child PID=12546.
+    before
+    Child specific code pid =12546 for fork return=0
+
+wait() does not specify witch child to wait for
+    -> it's job is to wait for the children processes to finish
+* all children need to die before the parent finishes the job
+
+-> if google were to be implemented like this, only one process could be done at a time
+while(1) {
+    get request
+    process request
+    send back response
+}
+
+-> in this version, getting the request is the only thing that's done one by one
+while(1) {
+    get request
+        if (fork() == 0) {
+            process  request
+            send response
+            exit(0);
+        }
+        // wait(0);
+}
+
+zobies -> children that don't die, because wait is not called
+you cannot really add a wait() here but it's gonna be very inefficient. since it gets a request, but does nothing with it until all children processes finish

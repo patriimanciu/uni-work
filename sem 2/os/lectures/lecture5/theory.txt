@@ -1,0 +1,97 @@
+children agian??
+
+while(1) {
+    get req
+        if (fork() == 0) {
+            process req
+            send response
+            exit(0);
+        }
+}
+
+when hitting ctrl c to interrupt the prgram, that's a signal
+same goes for ctrl z which places it in the background
+
+with few exceptions, all signals stop the program
+* man signal
+
+make a program that refuses to stop
+    we'll use 2 function, signal and kill
+    kill sends signals, signal stores it
+    TO KILL THE PROCESS
+        ❯ kill -SIGINT 8436
+        ❯ kill -9 8436
+    kill is a function that takes the signal and the runtime (?) id
+
+both wait and sleep stop the cpu
+    wait on the other hand waits for the child process to finish
+
+    void f(int signal){
+        wait(0);
+    }
+
+    signal (SIGCHILD, f);
+    while(1) {
+        get req
+         if (fork() == 0) {
+             process req
+             send response
+             exit(0);
+         }
+    }
+    SIG_IGN -> ignores the signal
+    SIG_DEF -> default
+
+Exec*
+       | absolute path | name to be searched in path
+_____________________________________________________
+       |               |
+array  |    execv      |         execup
+       |               |
+-----------------------------------------------------
+       |               |
+list   |    execl      |         execlp
+       |               |
+
+export PATH=.:$PATH
+^ this doesn't change the path, it prefixes it
+export PATH=.
+^ this changes the path
+
+execlp("grep", "grep", "-E", "abc", "/etc/passwd")
+char *a[] = {"grep", "grep", "-E", "abc", "/etc/passwd", NULL}
+execup("grep", a);
+
+*rewrites echo
+ #include <stdio.h>
+ #include <unistd.h>
+
+ int main(int argc, char** argv) {
+     execlp("echo", "echo", "asdf", NULL);
+     printf("we echoed\n");
+     return 0;
+ }
+
+ creating links between files: > ln -s ./a x
+ specify the program you want to run twice when using execlp!!
+
+
+ 1  2  3  4  5  6
+ ----  ----  ----
+  3     7     11
+    ----
+     10
+      ----------
+          21
+
+^ how to add processes fast
+-pipe
+-fifo
+-ipc -> shared memory (SHM)
+     -> message queue (MSG)
+     -> ?? smt (SEM)
+
+
+PIPE
+    > ALWAYS CLOSE THE PIPE ENDS AS SOON AS YOU DON'T NEED THEM
+    > close() doesn't actually close the pipe, but rather the pipe handlers

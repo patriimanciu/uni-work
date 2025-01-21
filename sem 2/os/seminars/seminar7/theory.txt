@@ -1,0 +1,42 @@
+Conditional variables
+    - one or more treads can wait for a condition to be true
+
+pb 27 : Write a C program that takes two numbers, N and M, as arguments from the command line. The program creates N "generator" threads that generate random lowercase letters and append them to a string with 128 positions. The program will create an additional "printer" thread that that waits until all the positions of the string are filled, at which point it prints the string and clears it. The N "generator" threads must generate a total of M such strings and the "printer" thread prints each one as soon as it gets to length 128.
+
+shell exam
+begin line: ^
+end line: $
+begin word: \<
+end word: \>
+
+2. write a regex that takes the multiple of 5 + 2 (ex: 2, 7, 12)
+    > grep -E "^(.{5})*..$"
+
+3. give the operators for the following shell verification:
+    a. string is not empty
+        [ -n $var ]
+    b. argument is a regular file
+        [ -f $var ]
+    c. is different (numerical)
+        [ $n1 -ne $n2 ]
+
+4. how would you restore the value of a file descpriptor overwritten by dup2?
+    save the initial value of the file descriptor before calling dup2
+
+5. 5
+
+6. fork returns 0 or smt positive if there's a child
+          P
+      /      \
+    C0       C1
+     |        /\
+    C01    C12 C13
+   /   \    |
+ C012 C013 C123
+  |
+C0123
+=> 9 processes
+
+7. only A
+
+

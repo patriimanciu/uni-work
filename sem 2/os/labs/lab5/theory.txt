@@ -1,0 +1,86 @@
+SED
+    > sed -E    's/ ________ / ________ /'
+                ^ search   ^ replace
+    > sed -E 's/ [A-Z] / - / ' -> replace the first occurence on each line
+    > sed -E 's / [A-Z] / - / g' -> the flag "g" stands for global, it replaces every occurence
+    > sed -E 's / [A-Z] / - / gi' -> replace everything, case insensitive
+        -> using -i replaces the content of a file, not just prints it
+
+
+* replace vowels with *
+> sed -E 's/[aeiou]/*/' file.txt -> replaces just the first occurence
+> sed -E 's/[aeiou]/*/g' file.txt -> replaces all of them globally
+> sed -E 's/[aeiou]/*/gi' file.txt -> replaces everything case insenstively
+
+* add before each vowel !
+    -> grouping 'sed/([aeioy])()()/*\1\2/'
+    > sed -E 's/([aeiou])/*\1/gi' file.txt  -> adds before every vowel *
+
+* swap uppercase-lowercase groups
+    > sed -E 's/([A-Z])([a-z])/\2\1/g' file.txt  *WITHOUT i
+
+* double each vowel
+    > sed -E 's/([aeiou])/\1\1/gi' file.txt
+
+operator y/
+    -> y/aeiou/@3!0w/
+    -> mapping? not string replacement, but rather a correspondence
+
+delete
+    > sed -E /Ana/d file.txt -> deletes all lines that contain Ana
+
+
+AWK
+    -> basically a mini programming language
+    -> print $smt prints a token that's split by a given delimitator
+
+> awk '{print $2}' file.txt
+    -> if that word doesn't exists, it prints a new line
+    -> every line gets applied this print $2
+
+* telling awk to define tokens by my given delimitator
+> awk -F: '{print $2}' file.txt
+> awk '{print NR, $0}' file.txt -> NR is the num of the line
+> awk '{print NF, $0}' file.txt -> NF is the number of fileds
+> awk '{print "start"} {print NF} {print "end"}' file.txt -> between '' we can have as many bodies as we want
+> awk 'BEGIN{print "start"} {print NF} END{print "end"}' file.txt -> BEGIN prints it just at the start and END prints it once at the end
+
+You can have a  __.awk file to format it better
+> awk -f try.awk file.txt
+  1  BEGIN{
+  2    print "Welcome this is the beginning of the file"
+  3 }
+  4
+  5 NR%2==0{print $0}
+  6
+  7 END{
+  8     print "Okay byeee"
+  9 }
+    -> print all lines that are even
+
+  1 BEGIN{
+  2    print "Welcome this is the beginning of the file"
+  3 }
+  4
+  5 NR%2==0&&length($2)>5{print $0}
+  6
+  7 END{
+  8     print "Okay byeee"
+  9 }
+    -> print all even lines for which the second token is > 5
+
+* write an awk script that will count how many users are 914 and print it
+  1 BEGIN{
+  2     cnt=0
+  3 }
+  4 $5 ~ / 914 / {
+  5     cnt++
+  6     print $5
+  7 }
+  8
+  9 END{
+ 10     print cnt
+ 11 }
+
+* piping, get the last name of people in 914 and replace vowels with *
+> awk -F: -f ex.awk /etc/passwd | awk '{print $5}' | sed -E 's/[aeiou]/*/gi'

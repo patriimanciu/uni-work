@@ -1,0 +1,100 @@
+we')ve been working as if we're the only ones running on that machine
+usually a machine has 1 processor, 8 cores, 16 threads
+
+ps - ef | wc -l -> see how many processes are running
+> ./1.sh in & -> runns the process in the background
+when two programs are running in the background, they are running in parallel, therefore you connnot predict the order of the output
+if those two processes are interracting with the same file or that interfere with one another, you might get a corrupted file
+    > ./1.sh in & ./1.sh in & -> runns both the process in the background
+
+moving foreward, we'll assume that running two processes at the same time it's gonna mess our files
+
+ #!/bin/bash
+
+ COUNT=0
+ F=$1
+ while [ $COUNT -lt 100 ]; do
+     X=$(cat $F)
+     X=$((X+1))
+     echo $X > $F
+     COUNT=$((COUNT+1))
+ done
+
+ execl VS execlp
+
+EXECL
+for execl, you have to specify the full path of the file you want to execute
+     ❯ which ls
+        /bin/ls
+the initial argument is the name of the command you want to execute
+*remember int main(int argc, char ** argv)
+*the list of arguments must be terminated by a NULL pointer
+    execl("/bin/ls", "ls", NULL);
+
+if you want to add more arguments, you just do it like this
+    execl("/bin/ls", "ls", "-l", NULL);
+    ^ first step into running another process in a C program
+
+    * exec remplaces the current process with a new process, so it it runs successfully, the current process will be terminated
+    * in case exec fails, the current process will continue running
+    -> this is called parasitic behaviour
+    ! you should always check the return value of exec, see if it failed or not
+you can run whatever executable with execl
+    execl("./1.sh", "1.sh", "./in", NULL);
+
+EXECLP
+execlp is looking for the path for us
+    execlp("ls", "ls", "-l", NULL);
+
+EXECV
+-> not a variadic function, takes 2 arguments
+execv(argv[1], argv + 1); -> ./exe /bin/ls -l
+    -> this meets the criteria of the exec family having NULL as the last argument
+    * must have full path
+
+EXECVP
+execvp(argv[1], argv + 1); -> same, but full path is not needed
+
+they all work in the same fashion, choosing which one to use is a matter of preference or situation
+
+
+CTRL + C -> sends a signal to the process, SIGINT which iterrupts it
+* man 7 signal -> see all signals available in linux
+by calling the function signal() you can catch the signal and do something with it
+    signal(SIGINT, handler);
+    void handler(int sig) {
+        printf("Caught signal %d\n", sig);
+    }
+    -> this will print "Caught signal 2" when you press CTRL + C
+
+or signal(SIGINT, f) -> f is a function that will be called when the signal is caught
+    void f(int sig) {
+        printf("Caught signal %d\n", sig);
+    }
+    signal(SIGINT, f);
+becuase we've overwritten the default behaviour of the signal, we can't interrupt the program with CTRL + C anymore
+now you have to SIGKILL the process
+ void f(int sig) {
+        printf("Caught signal %d\n", sig);
+        exit(0);
+     }
+    signal(SIGINT, f);
+
+
+FORK()
+-> creates a child process
+-> everything after the fork() will be executed by both the parent and the child, essentially creating two processes
+everything gets copied, the DS, CS, but also EIP (instruction pointer)
+fork returns a value if it was successful
+if (fork() < 0) {
+    perror("fork");
+    exit(1);
+} else if (fork() == 0) {
+    printf("Child PID = %d - PPID = %d\n", getpid(), getppid());
+} else {
+    printf("Parent PID = %d\n", getpid());
+}
+int i;
+wait(&i);
+-> this will make the parent wait for the child to finish executing
+

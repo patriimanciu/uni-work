@@ -1,0 +1,2 @@
+void* (*f)(void*) -> a pointer to a function that takes a void* and returns a void*.
+

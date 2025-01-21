@@ -1,0 +1,100 @@
+Unloading policices
+-------------------
+    -> RAM memory
+           RAM              Program
+           - - - -          0 1
+           - 0 - -          2 3
+           3 - - 1
+           - - - -
+           - 2 - -
+
+    -> What if the memory is full?
+       - you splill some data to disk
+    -> How to decide what to spill?
+       ? FIFO - little to no prediction (what if the first one is a c library?)
+       - NRU (Not Recently Used) - use 2 bits to track the usage of each page
+         1  - 00 - not used recently, not modified, not read, not written
+         3  - 01 - not used recently, modified, not read, written
+         2  - 10 - used recently, not modified, read, not written
+         4  - 11 - used recently, modified, read, written
+         -> you use the file from where you read more often then the one you write to
+         N pages of RAM
+         NxN bits matrix
+         when a page is accessed, its line is filled with 1, it's column with 0
+         the victim is the page with the minimum line total
+
+         0 0 0 0       0 0 0 0       0 0 0 0
+         0 0 0 0  -->  1 0 1 1  -->  1 0 1 0
+         0 0 0 0   1   0 0 0 0   3   0 0 0 0
+         0 0 0 0       0 0 0 0       1 1 1 0
+
+Allocation policies
+-------------------
+    |__|__|_________________ L __________________|
+
+    allocating a block of memory
+         *next = NULL           *next = NULL
+    |__|__|______ L1 ______|__|__|_________ L2 __________|
+    ^A                     ^F
+
+    - Where do you place a malloc request?
+        -> First Fit
+           - fast
+           - but you make no attempt to minimize fragmentation
+        -> Best Fit
+           - slower
+           - very small slices of free memory are created
+        -> Worst Fit
+           - slow
+           - leaves the largest possible chunks of free memory
+    2^n = 2^0 + 2^0 + 2^1 + 2^2 + ... + 2^(n-1)
+
+    What's the point of the cache?
+       - to reduce the time it takes to access data
+       - you keep stuff that you use often in the cache, close to you
+
+    Memory Hierarchy           ____________
+       Registers       /\      \          /
+       L1 cache       /  \      \  speed /
+       L2 cache      /    \      \      /
+       L3 cache     / size \      \    /
+       RAM         /        \      \  /
+       Disk       /__________\      \/
+
+    Direct swapping
+        cache location = page number % cache size
+        cache size = 16
+          0 8 17 1 33 49 2
+          0 8  1 1  1  1 2
+
+    Associative swapping
+        place the page in the first empty slot
+
+    Set Associative swapping
+        0 | 0  8  2  . . .
+        1 | 17 1 33 49 . .
+
+
+File Systems
+-------------
+    - data is stored in blocks
+    - file - a sequence of blocks
+    I-Node
+    | inode data | 0 | 1 | . . . | 9 | 10 | 11 | 12 |
+                   |
+        *pdf mara
+Directory
+---------
+    Name   |  I-Node
+    ----------------
+    a.txt  |   17
+    b.c    |   23
+    dir/   |   108
+
+* poza links? ask mara
+
+Remounting Volumes           stack
+    /: | A | B |                /: | X | Y |
+              \
+              B: | X | Y |
+

@@ -1,0 +1,89 @@
+"in" file
+"out" file
+* daca o comanda se termina cu codul de retur 0, atunci comanda este True (no error)
+
+in shell, toate lucrurile se rezuma la codul ascii
+
+constructia IF
+$@ -> toate argumentele din linia de comanda, unul dupa altul
+[ -f $A ] -> comanda test
+#!/bin/bash
+for A in $@; do
+    if [ -f $A ]; then
+        echo $A is a file
+    elif [ -d $A ]; then
+        echo $A is a dir
+    elif echo $A | grep -Eq "^[0-9]+$" then
+        echo $A is a number
+    else
+        echo We do not know what $A is
+    fi
+done
+
+[ -z "$F" ] -> nu e vid
+[ -r "$F" ] -> "citibil"
+
+md5, sha -> o functie care primeste ca argument un fisier super mare, care au ca output un sir de 160bits
+hashing -> nu s-au gasit doua fisiere care sa aiba acelasi output
+-> find > tipareste toate fisierele din acest director
+-> [ -n "$STATE" ] lungimea nenula
+
+*numele unui director, vreau sa anunt cand acesta a fost modificat
+#!/bin/bash
+D=$1 // numele directorului, primul argument
+if [ -z "$D" ]; then
+    echo "ERROR: No directory provided for monitoring" 1>&2 // iesirea standard acelei comenzi echo, se va pune pe acealasi fisieri de erori standard
+    exit 1
+fi
+if [ ! -d "$D" ]; then
+    echo "ERROR: Directory $D does not exist" >&2
+    exit 1
+fi
+
+STATE=""
+while true; do
+    S=""
+    CONTENT=""
+    for P in `find $D`; do
+        if [ -f $P ]; then
+            LS=`ls -l $P | sha1sum`
+            CONTNET=`sha1sum $P`
+        else
+            LS=`ls -ld $P | sha1sum`
+            CONTENT=`ls -l $P | sha1sum`
+        fi
+        S="$S\n$LS $CONTENT"
+    done
+    if [ -n "$STATE" ] && [ "$S" != "$STATE" ]; then
+        echo "Directory state changed"
+    fi
+    STATE=$S
+    sleep 1
+done
+
+*anuntarea userilor cu prea multe procese
+#!/bin/bash
+maxim = $1
+for user in `who | awk '( print$1 )'`; do
+    if [ 0`ps -u $user | wc -l` -ge 0$maxim ]; then # 0 daca cumva nu se da $1
+        echo $user
+        write $user <<MESAJ
+        Aveti prea multe procese
+    MESAJ
+    fi
+done
+
+*din directorul curent, sa se determine primul fisier text care contine o linie al carei prim cuvant are cel mult 5 caractere
+-> comanda file * - pentru directorul curent
+    -> putem decide ca un fisier este text daca comanda file returneaza pentru el "ASCII text"
+#!/bin/bash
+    for x in * ; do
+        if [ `file $x | grep -ci "ASCII text"` -eq 0 ] ; then continue ; fi
+        cat $x | while read cuv1 t; do
+            if [ ! -z $cuv1 ] && [ `expr length $cuv1` -ge 5 ]; then
+                echo In $x s-a gasit $cuv1 cu lungimea `expr length $cuv1`
+                break
+            fi
+        done
+        break
+    done

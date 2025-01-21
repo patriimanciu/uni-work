@@ -1,0 +1,12 @@
+we have to be super precies with the interpreter
+* for permision (user, group or other), use chmod +x filename or chmod 755 filename
+
+ #!/bin/bash -> this is the interpreter <-> /bin/bash a.sh
+ $1 -> first argument in the command line
+ argv -> $@ -> all arguments in the command line
+ argc -> $# -> number of arguments in the command line
+
+tabs are important in bash, just like in python
+$ works like a pointer in bash
+B=1 would add a value to a variable, while $B would get the value of the variable
+* if you want to use a variable in the command line, use $variable
