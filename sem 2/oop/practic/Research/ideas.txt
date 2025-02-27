@@ -1,0 +1,5 @@
+Marine_Biology study_marine_biology proposed Anne 2
+Islamic_Studies study_islamic_studies accepted Alex 3
+Communication study_communication accepted Lory 1
+Computer_Science study_computer_science proposed Clyde 2
+Telecommunication study_telecommunication proposed Barry 1

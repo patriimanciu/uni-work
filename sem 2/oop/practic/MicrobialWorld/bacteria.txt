@@ -1,0 +1,4 @@
+A1 Bacteroides 4 d1 d2 d3
+A2 Brucella 5 d4 d5 d6
+A3 Chlamydia 2 d7 d8 d9
+A4 Helicobacter 3 d10 d11 d12

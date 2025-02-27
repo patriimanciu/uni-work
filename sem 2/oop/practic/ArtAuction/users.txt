@@ -1,0 +1,3 @@
+Ana 1 collector
+John 2 administrator
+Maria 3 collector
